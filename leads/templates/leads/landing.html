@@ -8,7 +8,7 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
-            background: #f4f8ff;
+            background: linear-gradient(180deg, #f4f8ff 0%, #eaf1ff 100%);
         }
 
         /* 🔥 Urgency Banner */
@@ -21,29 +21,21 @@
             font-size: 14px;
         }
 
-        /* 🌍 Branding */
-        .branding {
+        /* 🎓 Hero Heading */
+        .hero-heading {
             text-align:center;
-            padding:20px;
-            background:white;
-            box-shadow:0 4px 12px rgba(0,0,0,0.05);
+            padding:40px 20px 10px 20px;
         }
 
-        .branding h2 {
-            color:#1f3c88;
-            margin-bottom:6px;
+        .hero-heading h1 {
+            font-size:34px;
+            color:#1e3a8a;
+            margin-bottom:10px;
         }
 
-        .branding p {
-            margin:4px 0;
-            font-size:14px;
+        .hero-heading p {
+            font-size:18px;
             color:#555;
-        }
-
-        .branding a {
-            color:#1f3c88;
-            text-decoration:none;
-            font-weight:600;
         }
 
         /* 🎓 Hero Section */
@@ -53,15 +45,14 @@
             align-items:center;
             justify-content:center;
             max-width:1200px;
-            margin:auto;
-            padding:60px 20px;
+            margin:10px auto 40px auto;
+            padding:10px 20px 20px 20px;
         }
 
         .hero-image {
             flex:1;
             min-width:300px;
             padding:20px;
-            position:relative;
         }
 
         .hero-image img {
@@ -76,20 +67,8 @@
             padding:20px;
         }
 
-        .hero-content h1 {
-            font-size:30px;
-            color:#1e3a8a;
-        }
-
-        .hero-content p {
-            color:#555;
-            margin-bottom:20px;
-        }
-
-        /* Glassmorphism Form */
         .card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
             padding:30px;
             border-radius:16px;
             box-shadow:0 15px 35px rgba(0,0,0,0.15);
@@ -120,27 +99,63 @@
             transform:translateY(-2px);
         }
 
-        /* ⭐ Reviews */
+        /* 🌍 Global Reach */
+        .branding {
+            text-align:center;
+            padding:50px 20px;
+            background:white;
+        }
+
+        .branding h2 {
+            color:#1f3c88;
+            margin-bottom:10px;
+        }
+
+        .branding p {
+            margin:6px 0;
+            color:#555;
+        }
+
+        .branding a {
+            color:#2563eb;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        /* ⭐ Google Reviews */
         .reviews {
             text-align:center;
-            padding:40px 20px;
+            padding:50px 20px;
+            background:#f8fbff;
         }
 
         .stars {
+            font-size:26px;
             color:#fbbf24;
-            font-size:22px;
+            margin:10px 0;
         }
 
-        /* 🔵 Map */
+        .review-btn {
+            display:inline-block;
+            margin-top:10px;
+            padding:10px 20px;
+            background:#2563eb;
+            color:white;
+            border-radius:8px;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        /* 📍 Map */
         .map-container {
             text-align:center;
-            padding:30px 20px;
+            padding:40px 20px;
         }
 
         iframe {
             width:90%;
             max-width:900px;
-            height:300px;
+            height:350px;
             border-radius:16px;
             border:none;
         }
@@ -168,16 +183,44 @@
                 flex-direction:column;
             }
         }
-
     </style>
 </head>
 
 <body>
 
+<!-- 🔥 Banner -->
 <div class="top-banner">
     🎓 September 2025 Intake Filling Fast – Limited Seats Available!
 </div>
 
+<!-- 🎓 Heading -->
+<div class="hero-heading">
+    <h1>🎓 Check Your Study Abroad Eligibility in 30 Seconds</h1>
+    <p>Get instant AI-based profile score & expert counselling guidance.</p>
+</div>
+
+<!-- 🎓 Image + Form -->
+<div class="hero">
+
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f"
+             alt="Students studying abroad">
+    </div>
+
+    <div class="hero-content">
+        <div class="card">
+            <form action="/chat/" method="get">
+                <input type="text" placeholder="Your Full Name" required>
+                <input type="number" placeholder="IELTS Score (if any)">
+                <input type="number" placeholder="Budget (in Lakhs)">
+                <button type="submit">🚀 Get Instant Eligibility</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<!-- 🌍 Branding -->
 <div class="branding">
     <h2>🌍 Global Reach Lucknow</h2>
     <p>
@@ -191,38 +234,20 @@
     </p>
 </div>
 
-<!-- 🎓 Hero -->
-<div class="hero">
-
-    <div class="hero-image">
-        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f"
-             alt="Students studying abroad">
-    </div>
-
-    <div class="hero-content">
-        <h1>Check Your Study Abroad Eligibility in 30 Seconds</h1>
-        <p>Get instant AI-based profile score & expert counselling guidance.</p>
-
-        <div class="card">
-            <form action="/chat/" method="get">
-                <input type="text" placeholder="Your Full Name" required>
-                <input type="number" placeholder="IELTS Score (if any)">
-                <input type="number" placeholder="Budget (in Lakhs)">
-                <button type="submit">🚀 Get Instant Eligibility</button>
-            </form>
-        </div>
-    </div>
-
-</div>
-
-<!-- ⭐ Reviews -->
+<!-- ⭐ Google Reviews -->
 <div class="reviews">
-    <h2>⭐ Rated 4.9/5 by 100+ Students</h2>
+    <h2>⭐ Rated 4.9 on Google</h2>
     <div class="stars">⭐⭐⭐⭐⭐</div>
-    <p>Trusted Study Abroad Experts in Lucknow</p>
+    <p>Trusted by 100+ Students in Lucknow</p>
+
+    <a href="https://www.google.com/search?q=Global+Reach+Lucknow"
+       target="_blank"
+       class="review-btn">
+       View Google Reviews
+    </a>
 </div>
 
-<!-- 🔵 Map -->
+<!-- 📍 Map -->
 <div class="map-container">
     <h2>📍 Visit Our Office</h2>
     <iframe src="https://www.google.com/maps?q=Global+Reach+Lucknow&output=embed"></iframe>
