@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Study Abroad Eligibility Check</title>
+    <title>Study Abroad Eligibility | Global Reach Lucknow</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: #f4f8ff;
         }
 
+        /* 🔥 Urgency Banner */
+        .top-banner {
+            background: linear-gradient(90deg,#ff512f,#dd2476);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* 🌍 Branding */
         .branding {
             text-align:center;
             padding:20px;
@@ -19,7 +31,6 @@
 
         .branding h2 {
             color:#1f3c88;
-            font-size:24px;
             margin-bottom:6px;
         }
 
@@ -35,70 +46,143 @@
             font-weight:600;
         }
 
-        .container {
-            text-align: center;
-            padding: 50px 20px;
+        /* 🎓 Hero Section */
+        .hero {
+            display:flex;
+            flex-wrap:wrap;
+            align-items:center;
+            justify-content:center;
+            max-width:1200px;
+            margin:auto;
+            padding:60px 20px;
         }
 
-        h1 {
-            font-size: 32px;
-            color: #1e3a8a;
+        .hero-image {
+            flex:1;
+            min-width:300px;
+            padding:20px;
+            position:relative;
         }
 
-        p {
-            color: #555;
-            font-size: 18px;
+        .hero-image img {
+            width:100%;
+            border-radius:16px;
+            box-shadow:0 20px 40px rgba(0,0,0,0.2);
         }
 
+        .hero-content {
+            flex:1;
+            min-width:320px;
+            padding:20px;
+        }
+
+        .hero-content h1 {
+            font-size:30px;
+            color:#1e3a8a;
+        }
+
+        .hero-content p {
+            color:#555;
+            margin-bottom:20px;
+        }
+
+        /* Glassmorphism Form */
         .card {
-            background: white;
-            max-width: 400px;
-            margin: 40px auto;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0px 8px 20px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            padding:30px;
+            border-radius:16px;
+            box-shadow:0 15px 35px rgba(0,0,0,0.15);
         }
 
         input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border: 1px solid #ddd;
+            width:100%;
+            padding:12px;
+            margin-bottom:12px;
+            border-radius:8px;
+            border:1px solid #ddd;
         }
 
         button {
-            width: 100%;
-            padding: 12px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
+            width:100%;
+            padding:12px;
+            background:#2563eb;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
         }
 
         button:hover {
-            background: #1d4ed8;
+            background:#1d4ed8;
+            transform:translateY(-2px);
         }
 
-        .footer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: gray;
+        /* ⭐ Reviews */
+        .reviews {
+            text-align:center;
+            padding:40px 20px;
         }
+
+        .stars {
+            color:#fbbf24;
+            font-size:22px;
+        }
+
+        /* 🔵 Map */
+        .map-container {
+            text-align:center;
+            padding:30px 20px;
+        }
+
+        iframe {
+            width:90%;
+            max-width:900px;
+            height:300px;
+            border-radius:16px;
+            border:none;
+        }
+
+        /* 🟢 WhatsApp */
+        .whatsapp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background:#25D366;
+            color:white;
+            padding:12px 18px;
+            border-radius:50px;
+            text-decoration:none;
+            font-weight:600;
+            box-shadow:0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .whatsapp:hover {
+            background:#1ebe5b;
+        }
+
+        @media(max-width:768px){
+            .hero{
+                flex-direction:column;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-<!-- Premium Top Branding Section -->
+<div class="top-banner">
+    🎓 September 2025 Intake Filling Fast – Limited Seats Available!
+</div>
+
 <div class="branding">
     <h2>🌍 Global Reach Lucknow</h2>
     <p>
         Office No 305, Kailash Complex,<br>
-        Rana Pratap Marg, Hazratganj,<br>
-        Lucknow, Uttar Pradesh 226001
+        Rana Pratap Marg, Hazratganj, Lucknow - 226001
     </p>
     <p>
         📞 
@@ -107,24 +191,47 @@
     </p>
 </div>
 
+<!-- 🎓 Hero -->
+<div class="hero">
 
-<div class="container">
-    <h1>🎓 Check Your Study Abroad Eligibility in 30 Seconds</h1>
-    <p>Get your AI-based profile score instantly & book expert counselling.</p>
-
-    <div class="card">
-        <form action="/chat/" method="get">
-            <input type="text" placeholder="Your Full Name" required>
-            <input type="number" placeholder="IELTS Score (if any)">
-            <input type="number" placeholder="Budget (in Lakhs)">
-            <button type="submit">🚀 Get Instant Eligibility</button>
-        </form>
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f"
+             alt="Students studying abroad">
     </div>
 
-    <div class="footer">
-        Trusted by 100+ Students | AI Powered CRM
+    <div class="hero-content">
+        <h1>Check Your Study Abroad Eligibility in 30 Seconds</h1>
+        <p>Get instant AI-based profile score & expert counselling guidance.</p>
+
+        <div class="card">
+            <form action="/chat/" method="get">
+                <input type="text" placeholder="Your Full Name" required>
+                <input type="number" placeholder="IELTS Score (if any)">
+                <input type="number" placeholder="Budget (in Lakhs)">
+                <button type="submit">🚀 Get Instant Eligibility</button>
+            </form>
+        </div>
     </div>
+
 </div>
+
+<!-- ⭐ Reviews -->
+<div class="reviews">
+    <h2>⭐ Rated 4.9/5 by 100+ Students</h2>
+    <div class="stars">⭐⭐⭐⭐⭐</div>
+    <p>Trusted Study Abroad Experts in Lucknow</p>
+</div>
+
+<!-- 🔵 Map -->
+<div class="map-container">
+    <h2>📍 Visit Our Office</h2>
+    <iframe src="https://www.google.com/maps?q=Global+Reach+Lucknow&output=embed"></iframe>
+</div>
+
+<!-- 🟢 WhatsApp -->
+<a href="https://wa.me/919827734605" class="whatsapp" target="_blank">
+    💬 Chat on WhatsApp
+</a>
 
 </body>
 </html>
