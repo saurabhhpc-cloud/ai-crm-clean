@@ -2,9 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.http import HttpResponse
+from django.shortcuts import render
 
 def home(request):
-    return HttpResponse("AI CRM is Live 🚀")
+    return render(request, "leads/landing.html")
+
 
 urlpatterns = [
     path('', home),
