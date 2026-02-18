@@ -1,0 +1,38 @@
+{% extends 'leads/base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Dashboard Overview</h2>
+
+<div class="row g-4">
+
+<div class="col-md-3">
+<div class="card shadow p-3 bg-light">
+<h6>Total Leads</h6>
+<h3 class="text-primary">{{ total }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 bg-light">
+<h6>Hot 🔥</h6>
+<h3 class="text-danger">{{ hot }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 bg-light">
+<h6>Warm 🟡</h6>
+<h3 class="text-warning">{{ warm }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 bg-light">
+<h6>Converted 💰</h6>
+<h3 class="text-success">{{ converted }}</h3>
+</div>
+</div>
+
+</div>
+
+{% endblock %}

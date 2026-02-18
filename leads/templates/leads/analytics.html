@@ -1,0 +1,62 @@
+{% extends 'leads/base.html' %}
+{% block content %}
+
+<h2 class="mb-4">📈 Advanced Analytics</h2>
+
+<div class="row g-4">
+
+<div class="col-md-8">
+<div class="glass-card">
+<canvas id="comboChart"></canvas>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="glass-card">
+<canvas id="pieChart"></canvas>
+</div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const comboCtx = document.getElementById('comboChart');
+new Chart(comboCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ labels|safe }},
+        datasets: [
+            {
+                type: 'bar',
+                label: 'Total Leads',
+                data: {{ lead_data|safe }},
+                backgroundColor: '#93c5fd'
+            },
+            {
+                type: 'line',
+                label: 'Converted',
+                data: {{ converted_data|safe }},
+                borderColor: '#2563eb',
+                borderWidth: 3,
+                fill: false
+            }
+        ]
+    }
+});
+
+const pieCtx = document.getElementById('pieChart');
+new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Hot 🔥','Warm 🟡','Cold 🔵'],
+        datasets: [{
+            data: [{{ hot }}, {{ warm }}, {{ cold }}],
+            backgroundColor: ['#f87171','#fde68a','#93c5fd']
+        }]
+    }
+});
+</script>
+
+{% endblock %}

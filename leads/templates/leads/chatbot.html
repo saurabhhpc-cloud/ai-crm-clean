@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Study Abroad Dashboard</title>
+
+<style>
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#eef2ff,#f8fafc);
+}
+
+.container { display:flex; height:100vh; }
+
+.left {
+    width:45%;
+    background:white;
+    padding:40px;
+    box-shadow:4px 0 20px rgba(0,0,0,0.05);
+}
+
+.right {
+    width:55%;
+    padding:40px;
+}
+
+h2 { margin-bottom:25px; }
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    border-radius:8px;
+    border:none;
+    background:linear-gradient(90deg,#4e73df,#1cc88a);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.result-card{
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.progress-bar{
+    margin:15px 0;
+    height:22px;
+    background:#e9ecef;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#1cc88a,#36b9cc);
+    width:0%;
+    transition:width 0.8s ease-in-out;
+    color:white;
+    text-align:center;
+    line-height:22px;
+    font-size:13px;
+}
+
+.badge{
+    padding:6px 14px;
+    border-radius:20px;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.hot{background:#e74a3b;color:white;}
+.warm{background:#f6c23e;color:black;}
+.cold{background:#36b9cc;color:white;}
+
+.ai-text{
+    margin-top:20px;
+    white-space:pre-wrap;
+    line-height:1.6;
+}
+
+.loader{ margin-top:15px; color:gray; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="left">
+<h2>🎓 AI Study Abroad Eligibility</h2>
+
+<input id="name" placeholder="Full Name">
+<input id="email" placeholder="Email">
+<input id="phone" placeholder="Phone">
+
+<select id="ielts">
+<option value="">IELTS</option>
+<option value="5.5">5.5</option>
+<option value="6">6.0</option>
+<option value="6.5">6.5</option>
+<option value="7">7.0</option>
+<option value="7.5">7.5</option>
+</select>
+
+<select id="budget">
+<option value="">Budget (Lakhs)</option>
+<option value="10">10</option>
+<option value="15">15</option>
+<option value="20">20</option>
+<option value="25">25</option>
+</select>
+
+<select id="qualification">
+<option value="12th">12th</option>
+<option value="Graduation">Graduation</option>
+</select>
+
+<select id="intake">
+<option value="September 2025">September 2025</option>
+<option value="January 2026">January 2026</option>
+</select>
+
+<button onclick="submitForm()">Analyze Profile</button>
+<div class="loader" id="loader"></div>
+
+</div>
+
+<div class="right">
+<div class="result-card" id="result">
+<h3>AI analysis will appear here</h3>
+</div>
+</div>
+
+</div>
+
+<script>
+
+function getFlag(country){
+
+    let text = country.toLowerCase();
+
+    if(text.includes("australia")) return "🇦🇺 Australia";
+    if(text.includes("uk") || text.includes("united kingdom") || text.includes("gb"))
+        return "🇬🇧 United Kingdom";
+    if(text.includes("uae") || text.includes("dubai"))
+        return "🇦🇪 UAE (Dubai)";
+    if(text.includes("singapore"))
+        return "🇸🇬 Singapore";
+
+    return country; // fallback
+}
+
+function submitForm(){
+
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+const phone = document.getElementById("phone").value;
+const ielts = document.getElementById("ielts").value;
+const budget = document.getElementById("budget").value;
+const qualification = document.getElementById("qualification").value;
+const intake = document.getElementById("intake").value;
+
+document.getElementById("loader").innerText="🤖 AI analyzing your profile...";
+document.getElementById("result").innerHTML="<h3>Processing...</h3>";
+
+fetch("/ai_chat/",{
+method:"POST",
+headers:{ "Content-Type":"application/json"},
+body:JSON.stringify({
+name,
+email,
+phone,
+ielts_score:parseFloat(ielts),
+budget:parseInt(budget),
+qualification,
+intake,
+user_summary:`
+Name: ${name}
+IELTS: ${ielts}
+Budget: ${budget}
+Qualification: ${qualification}
+Intake: ${intake}
+`
+})
+})
+.then(res=>res.json())
+.then(res=>{
+
+document.getElementById("loader").innerText="";
+
+if(res.error){
+document.getElementById("result").innerHTML="<h3 style='color:red;'>Error: "+res.error+"</h3>";
+return;
+}
+
+let badge="cold";
+if(res.lead_status.includes("Hot")) badge="hot";
+else if(res.lead_status.includes("Warm")) badge="warm";
+
+let countryDisplay=getFlag(res.recommended_country);
+
+document.getElementById("result").innerHTML=`
+
+<div style="font-size:18px;font-weight:600;">
+Eligibility Score: <span style="color:#1cc88a">${res.score}%</span>
+</div>
+
+<div class="progress-bar">
+<div class="progress-fill" id="progressBar">${res.score}%</div>
+</div>
+
+<p style="margin-top:15px;">
+<strong>🌍 Recommended Country:</strong> ${countryDisplay}
+</p>
+
+<p>
+<strong>Status:</strong>
+<span class="badge ${badge}">${res.lead_status}</span>
+</p>
+
+<hr>
+
+<div class="ai-text">
+${res.ai_reply ? res.ai_reply.replace(/\*\*/g,"") : ""}
+</div>
+
+<button style="
+margin-top:20px;
+background:#4e73df;
+border:none;
+padding:12px;
+border-radius:8px;
+color:white;
+font-weight:bold;
+cursor:pointer;
+width:100%;">
+Book Free Counselling
+</button>
+
+`;
+
+setTimeout(()=>{
+document.getElementById("progressBar").style.width=res.score+"%";
+},200);
+
+})
+.catch(()=>{
+document.getElementById("loader").innerText="";
+document.getElementById("result").innerHTML="<h3 style='color:red;'>Network Error</h3>";
+});
+}
+
+</script>
