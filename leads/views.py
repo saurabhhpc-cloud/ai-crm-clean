@@ -22,7 +22,15 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
 from django.shortcuts import render
+from django.shortcuts import render, redirect
 
+def landing(request):
+    if request.method == "POST":
+        return redirect("chat")
+    return render(request, "leads/landing.html")
+
+def chat_page(request):
+    return render(request, "leads/chat.html")
 
 @login_required
 def analytics(request):

@@ -2,7 +2,10 @@ from django.urls import path
 from . import views
 
 
+
 urlpatterns = [
+    path("", views.landing, name="landing"),
+    path("chat/", views.chat_page, name="chat"),
     path("ai_chat/", views.ai_chat, name="ai_chat"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("leads/", views.lead_list, name="lead_list"),
