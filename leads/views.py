@@ -31,6 +31,7 @@ def chat_page(request):
     return render(request, "leads/chat.html")
 
 
+
 # =====================================
 # DASHBOARD
 # =====================================
