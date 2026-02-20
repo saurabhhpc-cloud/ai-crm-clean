@@ -205,8 +205,9 @@ return;
 }
 
 let badge="cold";
-if(res.lead_status.includes("Hot")) badge="hot";
-else if(res.lead_status.includes("Warm")) badge="warm";
+if(res.lead_quality && res.lead_quality.includes("Hot")) badge="hot";
+else if(res.lead_quality && res.lead_quality.includes("Warm")) badge="warm";
+
 
 let countryDisplay=getFlag(res.recommended_country);
 
@@ -225,8 +226,8 @@ Eligibility Score: <span style="color:#1cc88a">${res.score}%</span>
 </p>
 
 <p>
-<strong>Status:</strong>
-<span class="badge ${badge}">${res.lead_status}</span>
+<strong>Status:</strong><span class="badge ${badge}">${res.lead_quality}</span>
+
 </p>
 
 <hr>
