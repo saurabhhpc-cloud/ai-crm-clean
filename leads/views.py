@@ -1,41 +1,64 @@
+import os
+import csv
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Count
+from django.db.models.functions import TruncMonth
+from django.core.paginator import Paginator
+from django.http import HttpResponse
+
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.response import Response
 from rest_framework import status
-import requests
 
+from openai import OpenAI
 from .models import Lead
 
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.core.paginator import Paginator
-from django.http import HttpResponse
-import csv
-from django.db.models.functions import TruncMonth
-from django.db.models import Count
 
-
-from django.contrib.auth.decorators import login_required
-from django.db.models.functions import TruncMonth
-from django.db.models import Count
-from django.shortcuts import render
-from django.shortcuts import render, redirect
+# =====================================
+# LANDING PAGE
+# =====================================
 
 def landing(request):
-    if request.method == "POST":
-        return redirect("chat")
     return render(request, "leads/landing.html")
+
 
 def chat_page(request):
     return render(request, "leads/chat.html")
 
+
+# =====================================
+# DASHBOARD
+# =====================================
+
+@login_required
+def dashboard(request):
+    total = Lead.objects.count()
+    hot = Lead.objects.filter(lead_quality__icontains="Hot").count()
+    warm = Lead.objects.filter(lead_quality__icontains="Warm").count()
+    cold = Lead.objects.filter(lead_quality__icontains="Cold").count()
+    converted = Lead.objects.filter(crm_status="converted").count()
+
+    return render(request, "leads/dashboard.html", {
+        "total": total,
+        "hot": hot,
+        "warm": warm,
+        "cold": cold,
+        "converted": converted,
+    })
+
+
+# =====================================
+# ANALYTICS
+# =====================================
+
 @login_required
 def analytics(request):
 
-    # Group by month
     monthly_leads = (
         Lead.objects
         .annotate(month=TruncMonth('created_at'))
@@ -65,7 +88,6 @@ def analytics(request):
         lead_data.append(item['total'])
         converted_data.append(converted_dict.get(item['month'], 0))
 
-    # Hot/Warm/Cold for Pie
     hot = Lead.objects.filter(lead_quality__icontains="Hot").count()
     warm = Lead.objects.filter(lead_quality__icontains="Warm").count()
     cold = Lead.objects.filter(lead_quality__icontains="Cold").count()
@@ -73,7 +95,7 @@ def analytics(request):
     context = {
         "labels": labels,
         "lead_data": lead_data,
-        "converted_data": converted_data,  # ✅ comma added
+        "converted_data": converted_data,
         "hot": hot,
         "warm": warm,
         "cold": cold
@@ -82,23 +104,9 @@ def analytics(request):
     return render(request, "leads/analytics.html", context)
 
 
-@login_required
-def dashboard(request):
-
-    total = Lead.objects.count()
-    hot = Lead.objects.filter(lead_quality__icontains="Hot").count()
-    warm = Lead.objects.filter(lead_quality__icontains="Warm").count()
-    cold = Lead.objects.filter(lead_quality__icontains="Cold").count()
-    converted = Lead.objects.filter(crm_status="converted").count()
-
-    return render(request, "leads/dashboard.html", {
-        "total": total,
-        "hot": hot,
-        "warm": warm,
-        "cold": cold,
-        "converted": converted,
-    })
-
+# =====================================
+# LEAD LIST
+# =====================================
 
 @login_required
 def lead_list(request):
@@ -127,6 +135,10 @@ def lead_list(request):
     })
 
 
+# =====================================
+# UPDATE STATUS
+# =====================================
+
 @login_required
 def update_status(request, lead_id):
     lead = get_object_or_404(Lead, id=lead_id)
@@ -138,6 +150,10 @@ def update_status(request, lead_id):
 
     return redirect("lead_list")
 
+
+# =====================================
+# EXPORT CSV
+# =====================================
 
 @login_required
 def export_csv(request):
@@ -161,41 +177,11 @@ def export_csv(request):
 
     return response
 
-# -------------------------------
-# AI CONFIG
-# -------------------------------
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "qwen2.5:0.5b"   # make sure installed
 
+# =====================================
+# AI CHAT API (OPENAI INTEGRATED)
+# =====================================
 
-SYSTEM_PROMPT = """
-You are an AI Study Abroad Assistant.
-
-STRICT RULES:
-- Use ONLY the data provided.
-- Do NOT add new details.
-- Do NOT assume anything.
-- Only structure given info.
-
-FORMAT STRICTLY:
-
-📋 Student Profile Summary
-
-<rewrite USER_SUMMARY clearly>
-
-🤖 AI Profile Analysis
-• Eligibility Score: <score>%
-• Recommended Country: <country>
-• Lead Category: <status>
-
-📌 Next Step:
-Our counsellor will review this profile and contact the student shortly.
-"""
-
-
-# -------------------------------
-# AI CHAT API
-# -------------------------------
 @csrf_exempt
 @api_view(["POST"])
 @authentication_classes([])
@@ -215,7 +201,6 @@ def ai_chat(request):
         qualification = data.get("qualification", "12th")
         backlogs = data.get("backlogs", False)
 
-        # Safe conversions
         try:
             ielts_score = float(data.get("ielts_score")) if data.get("ielts_score") else None
         except:
@@ -232,9 +217,7 @@ def ai_chat(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # -------------------------------
-        # CREATE LEAD (score auto calculated)
-        # -------------------------------
+        # Create Lead (score auto calculated)
         lead = Lead.objects.create(
             name=name,
             email=email,
@@ -252,42 +235,55 @@ def ai_chat(request):
         recommended_country = lead.recommended_country
         lead_quality = lead.lead_quality
 
-        # -------------------------------
-        # AI PROMPT
-        # -------------------------------
-        final_prompt = f"""
-{SYSTEM_PROMPT}
+        # ===============================
+        # OPENAI CALL
+        # ===============================
 
+        try:
+            client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+            completion = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a professional Study Abroad Assistant. Use only provided data. Do not assume extra details. Format response clearly."
+                    },
+                    {
+                        "role": "user",
+                        "content": f"""
 AI PROFILE ANALYSIS:
 Score: {score}
 Recommended Country: {recommended_country}
-Lead Status: {lead_quality}
+Lead Category: {lead_quality}
 
 USER_SUMMARY:
 {user_summary}
 """
+                    }
+                ],
+                temperature=0.3,
+            )
 
-        payload = {
-            "model": MODEL,
-            "prompt": final_prompt,
-            "stream": False
-        }
+            ai_text = completion.choices[0].message.content
 
-        # -------------------------------
-        # OLLAMA CALL
-        # -------------------------------
-        try:
-            response = requests.post(OLLAMA_URL, json=payload, timeout=120)
-            response.raise_for_status()
-            ai_text = response.json().get("response", "").strip()
         except Exception as e:
-            print("Ollama Error:", e)
-            ai_text = "Profile analyzed successfully."
+            print("OpenAI Error:", e)
+            ai_text = f"""
+📋 Student Profile Summary
 
-        # -------------------------------
-        # WHATSAPP NOTIFY COUNSELLOR
-        # -------------------------------
-       
+Name: {name}
+IELTS: {ielts_score}
+Budget: {budget} Lakhs
+
+🤖 AI Profile Analysis
+• Eligibility Score: {score}%
+• Recommended Country: {recommended_country}
+• Lead Category: {lead_quality}
+
+📌 Next Step:
+Our counsellor will contact you shortly.
+"""
 
         return Response({
             "success": True,
